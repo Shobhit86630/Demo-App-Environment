@@ -1,21 +1,19 @@
 import subprocess
 
 
-def get_container_logs(container: str, lines: int = 100) -> dict:
+def get_systemd_logs(service: str, lines: int = 100) -> dict:
     """
-    Retrieve the last N lines of logs from an approved Docker container.
+    Retrieve logs for an approved systemd service.
     """
 
-    allowed_containers = {
-        "sentinel-api",
-        "sentinel-postgres",
-        "sentinel-redis",
+    allowed_services = {
+        "docker",
     }
 
-    if container not in allowed_containers:
+    if service not in allowed_services:
         return {
             "success": False,
-            "error": f"Container '{container}' is not allowed."
+            "error": f"Service '{service}' is not allowed."
         }
 
     if lines < 1 or lines > 1000:
@@ -26,11 +24,12 @@ def get_container_logs(container: str, lines: int = 100) -> dict:
 
     result = subprocess.run(
         [
-            "docker",
-            "logs",
-            "--tail",
+            "journalctl",
+            "-u",
+            service,
+            "-n",
             str(lines),
-            container,
+            "--no-pager",
         ],
         capture_output=True,
         text=True,
@@ -39,7 +38,7 @@ def get_container_logs(container: str, lines: int = 100) -> dict:
 
     return {
         "success": result.returncode == 0,
-        "container": container,
-        "logs": result.stdout + result.stderr,
+        "service": service,
+        "logs": result.stdout,
         "error": result.stderr if result.returncode != 0 else None,
     }
