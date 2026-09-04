@@ -1,9 +1,14 @@
 import subprocess
 
 
-def get_container_logs(container: str, lines: int = 100) -> dict:
+def get_container_logs(container: str, lines: int = 100, since: str = None) -> dict:
     """
-    Retrieve the last N lines of logs from an approved Docker container.
+    Retrieve logs from an approved Docker container.
+
+    With `since` (an RFC3339 timestamp or docker's relative duration syntax,
+    e.g. "2024-01-01T00:00:00" or "30s"), only lines emitted after that point
+    are returned - what the live collector uses to fetch just the delta since
+    its last poll instead of re-reading (and re-embedding) the same tail.
     """
 
     allowed_containers = {
@@ -24,18 +29,27 @@ def get_container_logs(container: str, lines: int = 100) -> dict:
             "error": "lines must be between 1 and 1000."
         }
 
-    result = subprocess.run(
-        [
-            "docker",
-            "logs",
-            "--tail",
-            str(lines),
-            container,
-        ],
-        capture_output=True,
-        text=True,
-        timeout=10,
-    )
+    command = ["docker", "logs", "--tail", str(lines)]
+
+    if since:
+        command += ["--since", since]
+
+    command.append(container)
+
+    try:
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except (subprocess.SubprocessError, OSError) as error:
+        return {
+            "success": False,
+            "container": container,
+            "logs": "",
+            "error": f"Could not run docker logs: {error}",
+        }
 
     return {
         "success": result.returncode == 0,

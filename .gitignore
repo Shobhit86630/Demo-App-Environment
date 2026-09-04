@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Environment
+.env
+
+# Agent evidence store (regenerated on every investigation)
+*.db

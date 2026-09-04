@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(rg:*)",
+      "Bash(docker compose ps:*)",
+      "Bash(docker compose logs:*)",
+      "Bash(docker ps:*)",
+      "Bash(curl -s localhost:8001/*)",
+      "Bash(curl -s localhost:8000/*)"
+    ],
+    "deny": [
+      "Bash(docker compose down -v:*)"
+    ]
+  }
+}
