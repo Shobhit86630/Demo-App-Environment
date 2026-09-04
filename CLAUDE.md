@@ -9,7 +9,7 @@ Two halves of an incident-investigation demo:
 - `agent/` — **Sentinel**, a FastAPI service that investigates incidents by shelling out to host tooling (docker, git, journalctl, ss) and querying Postgres, then returns structured evidence.
 - `demo_app/` — **the target**. A deliberately broken FastAPI + Postgres + Redis stack in Docker Compose whose stated purpose ("produce errors and technical glitches") is to give the agent something real to diagnose.
 
-`demo_app` is a separately-versioned git repo (tracked by the parent as a gitlink at commit `aa5e618`, with no `.gitmodules`). Committing inside `demo_app` does not update the parent pointer — `git add demo_app` in the parent does. The parent repo has no remote; `demo_app`'s remote is `github.com/Shobhit86630/Demo-App-Environment`.
+`demo_app` is tracked as regular files in this repo (it was previously a separate gitlink at commit `aa5e618`, folded in when `Demo-App-Environment`'s GitHub repo turned out to be the same repo, renamed, as this one's remote). The repo's remote is `github.com/Shobhit86630/LLM-Based-Application-Root-Cause-Analysis-System`.
 
 ## Commands
 
