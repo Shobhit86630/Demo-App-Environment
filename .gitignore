@@ -12,3 +12,4 @@ venv/
 
 # Agent evidence store (regenerated on every investigation)
 *.db
+*.db-journal
